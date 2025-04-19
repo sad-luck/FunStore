@@ -75,6 +75,7 @@ namespace FunStore
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IPurchaseProcessorService, PurchaseProcessorService>();
 
             var app = builder.Build();
 
