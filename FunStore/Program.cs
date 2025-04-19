@@ -73,9 +73,12 @@ namespace FunStore
 
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
+            builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IPurchaseProcessorService, PurchaseProcessorService>();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             var app = builder.Build();
 

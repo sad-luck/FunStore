@@ -13,6 +13,8 @@ namespace FunStore.Services;
 
 public interface IUserService
 {
+    Task<string> AddMembershipRoleAndRepublishToken(AppUser user, Memberships[] membershipRoles);
+    Task<AppUser?> GetUserByName(string? username, bool includeCustomer = true);
     Task<string> Login(string username, string password);
     Task Register(string username, string password, string firsName, string lastName);
 }
@@ -68,8 +70,37 @@ public class UserService : IUserService
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+
             throw;
         }
+    }
+
+    public async Task<AppUser?> GetUserByName(string? username, bool includeCustomer = true)
+    {
+        if (username.IsNullOrEmpty())
+            throw new ValidationException("Username is required");
+
+        var query = _dbcontext.Users.AsQueryable();
+
+        if (includeCustomer)
+        {
+            query.Include(x => x.Customer);
+        }
+
+        return await query.FirstOrDefaultAsync(x => x.Username == username);
+    }
+
+    public async Task<string> AddMembershipRoleAndRepublishToken(AppUser user, Memberships[] membershipRoles)
+    {
+        if (user.IsPremium() || user.RolesAlreadySetted(membershipRoles))
+            return string.Empty;
+
+        user.AddRole(membershipRoles);
+
+        await _dbcontext.SaveChangesAsync();
+
+        return GenerateJwtToken(user);
     }
 
     private string GenerateJwtToken(AppUser user)

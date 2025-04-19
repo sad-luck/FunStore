@@ -12,6 +12,7 @@ public class FunStoreContext : DbContext
     public DbSet<AppUser> Users { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<ProductBase> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

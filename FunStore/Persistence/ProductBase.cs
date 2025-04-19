@@ -1,4 +1,5 @@
-﻿namespace FunStore.Persistence;
+﻿
+namespace FunStore.Persistence;
 
 public abstract class ProductBase
 {
@@ -9,6 +10,10 @@ public abstract class ProductBase
     public decimal Price { get; set; }
 
     public ProductType Type { get; set; }
+
+    public bool IsSimpleProduct() => Type != ProductType.Membership;
+
+    public bool IsMembershipProduct() => Type == ProductType.Membership;
 }
 
 public enum ProductType
