@@ -85,7 +85,7 @@ public class UserService : IUserService
 
         if (includeCustomer)
         {
-            query.Include(x => x.Customer);
+            query = query.Include(x => x.Customer);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Username == username);

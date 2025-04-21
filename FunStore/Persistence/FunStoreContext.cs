@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FunStore.Persistence;
 
@@ -27,5 +28,14 @@ public class FunStoreContext : DbContext
             .HasValue<Membership>(ProductType.Membership)
             .HasValue<Video>(ProductType.Video)
             .HasValue<Book>(ProductType.Book);
+
+        modelBuilder.Entity<Customer>()
+            .HasMany(x => x.Orders)
+            .WithOne(x => x.Customer)
+            .HasForeignKey(x => x.CustomerId);
+
+        modelBuilder.Entity<Order>()
+           .Property(nameof(Order.Items))
+           .HasConversion(new ValueConverter<IList<string>, string>(v => string.Join(";", v), v => v.Split(new[] { ';' })));
     }
 }

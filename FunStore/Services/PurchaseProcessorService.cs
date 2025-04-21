@@ -1,4 +1,5 @@
-﻿using FunStore.Persistence;
+﻿using FunStore.Models.Response;
+using FunStore.Persistence;
 using FunStore.Persistence.Builders;
 using FunStore.ValidationExceptions;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ namespace FunStore.Services;
 
 public interface IPurchaseProcessorService
 {
-    Task<object?> PurchaseOrder(IEnumerable<int> productIds);
+    Task<PurchaseOrderResponseModel> PurchaseOrder(IEnumerable<int> productIds);
 }
 
 public class PurchaseProcessorService : IPurchaseProcessorService
@@ -26,10 +27,10 @@ public class PurchaseProcessorService : IPurchaseProcessorService
         _userService = userService;
     }
 
-    public async Task<object?> PurchaseOrder(IEnumerable<int> productIds)
+    public async Task<PurchaseOrderResponseModel> PurchaseOrder(IEnumerable<int> productIds)
     {
         if (productIds is null || productIds == Enumerable.Empty<int>())
-            throw new ValidationException("");
+            throw new ValidationException("At least one ID must be provided");
 
         var uniqueIds = productIds.Distinct();
 
@@ -57,13 +58,12 @@ public class PurchaseProcessorService : IPurchaseProcessorService
 
             var order = orderBuilder.Build();
 
-            //_dbcontext.Orders.Add(order); TODO: Config + Migration
+            _dbcontext.Orders.Add(order);
 
             await _dbcontext.SaveChangesAsync();
-
             await transaction.CommitAsync();
 
-            return products;
+            return new PurchaseOrderResponseModel(order.Id, order.CustomerId, order.Items, order.Total, membershipProductProcessingResult);
         }
         catch (Exception)
         {
@@ -77,6 +77,9 @@ public class PurchaseProcessorService : IPurchaseProcessorService
     {
         foreach (var product in products)
         {
+            if (!product.IsSimpleProduct())
+                continue;
+
             if (user.Memberships.HasFlag(GetRequiredMembership(product.Type)))
             {
                 orderBuilder.AddItem(product);
@@ -91,13 +94,16 @@ public class PurchaseProcessorService : IPurchaseProcessorService
     {
         foreach (var product in membershipProducts)
         {
-            if (user.Memberships.HasFlag(GetRequiredMembership(product.RelatedProductType)))
+            if (!product.IsMembershipProduct() || user.Memberships.HasFlag(GetRequiredMembership(product.RelatedProductType)))
                 continue;
 
             orderBuilder.AddItem(product);
         }
 
-        return await _userService.AddMembershipRoleAndRepublishToken(user, [.. membershipProducts.Select(x => GetRequiredMembership(x.RelatedProductType))]);
+        return await _userService.AddMembershipRoleAndRepublishToken(user,
+            [.. membershipProducts
+                .Where(x => x.IsMembershipProduct())
+                .Select(x => GetRequiredMembership(x.RelatedProductType))]);
     }
 
     private Memberships GetRequiredMembership(ProductType type) => type switch

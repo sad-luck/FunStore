@@ -7,7 +7,7 @@ public class Order
 
     public decimal Total { get; set; }
 
-    public List<string> Items { get; set; } = new();
+    public IList<string> Items { get; set; } = new List<string>();
 
     public int CustomerId { get; set; }
 
