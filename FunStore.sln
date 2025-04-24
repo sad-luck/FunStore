@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunStore", "FunStore\FunStore.csproj", "{86BBDFED-E1AB-4519-96D2-55EFC2A7BC0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunStore.Tests", "FunStore.Tests\FunStore.Tests.csproj", "{A8A2FCFD-9FB5-4D6E-A605-7DD264384611}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{86BBDFED-E1AB-4519-96D2-55EFC2A7BC0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86BBDFED-E1AB-4519-96D2-55EFC2A7BC0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86BBDFED-E1AB-4519-96D2-55EFC2A7BC0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8A2FCFD-9FB5-4D6E-A605-7DD264384611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8A2FCFD-9FB5-4D6E-A605-7DD264384611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8A2FCFD-9FB5-4D6E-A605-7DD264384611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8A2FCFD-9FB5-4D6E-A605-7DD264384611}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,6 +15,9 @@ public class Order
 
     public void AddItem(ProductBase p)
     {
+        if (p is null)
+            return;
+
         Items.Add(p.Title);
         Total += p.Price;
     }
